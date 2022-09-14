@@ -1,8 +1,9 @@
 from flask import Blueprint
-from main import db
+from main import db, bc
 from models.users import User
 from datetime import date
 
+# creating the blueprint for the database commands
 db_cmd = Blueprint('db', __name__)
 
 # Create databases from the models
@@ -34,7 +35,8 @@ def seed_db():
             first_name = user[0],
             last_name = user[1],
             email = user[2],
-            password = user[3],
+            # Hash the password and decode to utf-8
+            password = bc.generate_password_hash(user[3]).decode('utf-8'),
             dob = date(day = user[4], month = user[5], year = user[6]),
             country = user[7],
             state = user[8],
