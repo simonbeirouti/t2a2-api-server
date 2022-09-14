@@ -4,3 +4,6 @@ venv
 
 # Environment file
 .env
+
+# Random stuff
+.DS_Store
