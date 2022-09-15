@@ -1,12 +1,11 @@
-import os 
-from flask import send_from_directory     
+# import os 
+# from flask import send_from_directory     
 from datetime import timedelta
 from flask import Blueprint, request
 from main import db, bc
 from flask_jwt_extended import create_access_token
 from models.users import User
 from schemas.user_schema import user_schema
-from marshmallow.exceptions import ValidationError
 
 main = Blueprint("auth", __name__)
 
@@ -53,37 +52,36 @@ def main_page():
 @main.route("/register", methods=["POST"])
 def register_user():
     user_fields = user_schema.load(request.json)
-    user = User.query.filter_by(username=user_fields["username"]).first()
-    if user:
-        return {"error": "User already exists."}, 400
-    user = User.query.filter_by(email=user_fields["email"]).first()
+    user = User.query.filter_by(email = user_fields["email"]).first()
     if user:
         return {"error": "Email already exists."}, 400
     user = User(
-        username = user_fields["username"],
-        password = bc.generate_password_hash(user_fields["password"]).decode("utf-8"),
         email = user_fields["email"],
+        password = bc.generate_password_hash(user_fields["password"]).decode("utf-8"),
     )
     db.session.add(user)
     db.session.commit()
     token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(days=1))
-    return {"username": user.username, "token": token}, 200
+    return {"username": user.email, "token": token}, 200
 
 # Setup the login route so users can sign into their account
 @main.route("/login", methods=["POST"])
 def login_user():
     user_fields = user_schema.load(request.json)
-    user = User.query.filter_by(username=user_fields["username"]).first()
+    user = User.query.filter_by(email=user_fields["email"]).first()
     if not user:
-        return {"error": "Username is not valid."}, 404
+        return {"error": "email is not valid."}, 404
     if not bc.check_password_hash(user.password, user_fields["password"]):
         return {"error": "Password is not valid."}, 404
     token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(days=1))
-    return {"username": user.username, "token": token}, 200
+    return {"username": user.email, "token": token}, 200
 
 # Setup the jobs route so anyone can get a list of the jobs posted
+# @main.route('/jobs', methods=["GET"])
+# def jobs_page():
+
 
 # add route to fix favicon error
-@main.route('/favicon.ico') 
-def favicon(): 
-    return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+# @main.route('/favicon.ico') 
+# def favicon(): 
+#     return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/ico')
