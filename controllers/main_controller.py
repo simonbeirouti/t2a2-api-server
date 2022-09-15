@@ -4,6 +4,7 @@ from main import db, bc
 from flask_jwt_extended import create_access_token
 from models.users import User
 from schemas.user_schema import user_schema
+from marshmallow.exceptions import ValidationError
 
 main = Blueprint("auth", __name__)
 
@@ -81,9 +82,13 @@ def login_user():
 # Setup the jobs route so anyone can get a list of the jobs posted
 
 # add route to fix favicon error
-
 @main.route('/favicon.ico') 
 def favicon(): 
     import os 
     from flask import send_from_directory     
     return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+# Add error handler to get more concise error messages
+@main.errorhandler(ValidationError)
+def handle_marshmallow_validation(err):
+    return err.messages, 400
