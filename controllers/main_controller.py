@@ -87,8 +87,3 @@ def login_user():
 @main.route('/favicon.ico') 
 def favicon(): 
     return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-# Add error handler to get more concise error messages
-@main.errorhandler(ValidationError)
-def handle_marshmallow_validation(err):
-    return err.messages, 400
