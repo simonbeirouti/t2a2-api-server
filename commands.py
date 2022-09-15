@@ -30,7 +30,7 @@ def seed_db():
         ['Julia', 'Gillard', 'jg@e.com', '123qwe123', 29, 9, 1961, 'Wales', 'Vale of Glamorgan', 'Barry']]
     # Loop through the array and add the users
     for user in users:
-        # Create the user
+        # Create the user with the data in users array
         new_user = User(
             first_name = user[0],
             last_name = user[1],
