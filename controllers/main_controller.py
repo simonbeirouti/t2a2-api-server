@@ -86,7 +86,7 @@ def login_user():
 def favicon(): 
     import os 
     from flask import send_from_directory     
-    return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return send_from_directory(os.path.join(main.root_path, 'assets'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 # Add error handler to get more concise error messages
 @main.errorhandler(ValidationError)
