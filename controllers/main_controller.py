@@ -1,6 +1,6 @@
 from datetime import timedelta
 from flask import Blueprint, request
-from main import db, bcrypt
+from main import db, bc
 from flask_jwt_extended import create_access_token
 from models.users import User
 from schemas.user_schema import user_schema
@@ -58,7 +58,7 @@ def register_user():
         return {"error": "Email already exists."}, 400
     user = User(
         username = user_fields["username"],
-        password = bcrypt.generate_password_hash(user_fields["password"]).decode("utf-8"),
+        password = bc.generate_password_hash(user_fields["password"]).decode("utf-8"),
         email = user_fields["email"],
     )
     db.session.add(user)
@@ -73,7 +73,7 @@ def login_user():
     user = User.query.filter_by(username=user_fields["username"]).first()
     if not user:
         return {"error": "Username is not valid."}, 404
-    if not bcrypt.check_password_hash(user.password, user_fields["password"]):
+    if not bc.check_password_hash(user.password, user_fields["password"]):
         return {"error": "Password is not valid."}, 404
     token = create_access_token(identity=str(user.user_id), expires_delta=timedelta(days=1))
     return {"username": user.username, "token": token}, 200
