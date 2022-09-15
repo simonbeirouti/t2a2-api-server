@@ -18,4 +18,8 @@ def create_app():
     from commands import db_cmd
     app.register_blueprint(db_cmd)
 
+    from controllers import registerable_controllers
+    for i in registerable_controllers:
+        app.register_blueprint(i)
+
     return app
