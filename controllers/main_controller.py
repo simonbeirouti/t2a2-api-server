@@ -1,3 +1,5 @@
+import os 
+from flask import send_from_directory     
 from datetime import timedelta
 from flask import Blueprint, request
 from main import db, bc
@@ -84,8 +86,6 @@ def login_user():
 # add route to fix favicon error
 @main.route('/favicon.ico') 
 def favicon(): 
-    import os 
-    from flask import send_from_directory     
     return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 # Add error handler to get more concise error messages
